@@ -1,26 +1,23 @@
 name: CI/CD Pipeline
-
 on:
   push:
     branches:
       - master
       - feature
-
 jobs:
   lint-html:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install HTMLHint
         run: npm install -g htmlhint
       - name: Lint HTML
         run: htmlhint index.html
-
   docker-push:
     runs-on: ubuntu-latest
     needs: lint-html
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Log in to DockerHub
         uses: docker/login-action@v3
         with:
@@ -32,7 +29,6 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/si-2026-lab3:${{ github.ref_name }}-latest
-
   deploy-pages:
     runs-on: ubuntu-latest
     needs: lint-html
@@ -44,11 +40,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/configure-pages@v3
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
